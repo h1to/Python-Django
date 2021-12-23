@@ -1,0 +1,187 @@
+{% extends 'market/base.html' %}
+{% load static %}
+
+
+{% block style %}
+    <script type="text/javascript">
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "270px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-3">
+            <img style="padding: 0px; width: 80%; margin-top: 80px" src="{% static 'market/images/side_background.png' %}">
+        </div>
+
+        <div class="col-6">
+            <div style="margin-top:120px">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-secondary mt-5 mb-3" role="alert">
+                        {{message}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <h3 class="mb-5" style="text-align: center;">Basket Items</h3>
+
+                {% if basket_items.count == 0 %}
+                    <a  href="{% url 'home' %}" style="text-align: center;"><h2>Your basket is empty! Let's go shopping!</h2></a>
+                {% endif %}
+
+                {% for basket_item in basket_items %}
+                <div class="row">
+                    <div class="col-10">
+                        <form method="POST" action="{% url 'update_basket_item' %}">
+                            {% csrf_token %}
+                            <div class="row mt-4">
+                                <input type="hidden" name="basket_item_id" value="{{basket_item.id}}">
+                                <div class="col-2">
+                                    <img class="profile_photo" src="{{basket_item.item.image.url}}" style="border-radius: 20px; width:70px; height:70px;">
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="name">Name : </label>
+                                    <input type="text" class="special_input w-100" value="{{basket_item.item.name}}" id="name" readonly>
+                                </div>
+                                
+                                <div class="col-2">
+                                    <label for="name">Amount : </label>
+                                    <input type="text" class="w-75" name="count" value="{{basket_item.count}}">
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="name">Price : </label>
+                                    <input type="text" class="special_input w-100" value="{{basket_item.item.price}}" readonly>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="name">Total : </label>
+                                    <input type="text" class="special_input w-100" name="price" value="{{basket_item.price}}">
+                                </div>
+
+                                <div class="col-2">
+                                    <button class="btn btn-primary mt-3 w-100" type="submit">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-2">
+                        <form method="POST" action="{% url 'delete_basket_item' %}">
+                            <input type="hidden" name="basket_item_id" value="{{basket_item.id}}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary w-75" style="margin-top: 40px;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if basket_items %}
+                
+                    {% if delivery %}
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Total: <output name="total">{{total}}</output></p>
+                        </div>
+                        <div class="col-9">
+                            <div class="d-flex mt-3 justify-content-end">
+                                <button class="btn btn-secondary mt-3 w-25" data-toggle="modal" data-target="#PaymentDataCheck">Buy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="PaymentDataCheck" tabindex="-1" role="dialog" aria-labelledby="PaymentDataCheck" aria-hidden="true" style="margin-top:120px;">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Paymend Data</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <span style="font-size: 17px;"><bold>Address:</bold></span>
+                                    <span style="font-size: 17px;">
+                                        {{delivery.street}} street, building {{delivery.building}}, {{delivery.floor}} floor, apartments {{delivery.apartment}}
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span style="font-size: 17px;"><bold>Payment card:</bold></span>
+                                    <span style="font-size: 17px;">{{payment.payment}}</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" style="background-color: black" data-dismiss="modal">Cancel</button>
+                                {% if client_data_filled %}
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#SuccessPayment">Buy</button>
+                                {% else %}
+                                <a href="{% url 'profile' %}">
+                                    <button type="button" class="btn btn-secondary">Fill my data</button>
+                                </a>
+                                {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="SuccessPayment" tabindex="-1" role="dialog" aria-labelledby="SuccessPayment" aria-hidden="true" style="margin-top:120px;">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Success Payment</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="success_payment_card">
+                                    <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin-left:auto; margin-right: auto; display: block;">
+                                      <i class="checkmark">✓</i>
+                                    </div>
+                                      <h1 style="margin-left: 100px; margin-top: 10px;">Success</h1> 
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <form method="POST" action="{% url 'buy_basket_items' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Okay</button>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    {% else %}
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Total: <output name="total">{{total}}</output></p>
+                        </div>
+                        <div class="col-9">
+                            <a href="{% url 'sign_in' %}">
+                                <div class="d-flex mt-3 justify-content-end">
+                                    <button class="btn btn-secondary mt-3 w-25">
+                                        Buy
+                                    </button>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                
+            </div>
+        </div>
+        <div class="col-3">
+            <img style="padding: 0px; width: 80%; margin-left: 0; margin-top: 80px" src="{% static 'market/images/side_background.png' %}">
+        </div>
+    </div>
+{% endblock %}

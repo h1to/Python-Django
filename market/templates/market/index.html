@@ -1,0 +1,109 @@
+{% extends 'market/base.html' %}
+{% load static %}
+
+{% block title %}
+    Market 
+{% endblock %} 
+{% block style %}
+<script type="text/javascript">
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "270px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3">
+            <img style="padding-left: 0px; width: 80%" src="{% static 'market/images/side_background.png' %}">
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12">
+                    <div id="carouselCategory" class="carousel slide" data-ride="carousel" style="margin-top: 80px;">
+                        <div class="carousel-inner">
+                        {% if first_category %}
+                            <div class="carousel-item active">
+                                <a href="/?category={{first_category.name}}">
+                                 <img class="w-100" style="margin-top: 20px" src="{{first_category.image.url}}" alt="{{first_category.name}} slide">
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% for category in categories %}
+                            <div class="carousel-item">
+                                <a href="/?category={{category.name}}">
+                                    <img class="w-100" style="margin-top: 20px" src="{{category.image.url}}" alt="{{category.name}} slide" style="cursor: pointer;">
+                                </a>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselCategory" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselCategory" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
+                      </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                {% for item in items %}
+                <div class="col-3 mt-3">
+                    <div class="card item_card" style="border-radius: 40px">
+                        <a href="{% url 'item_info' item.id %}">
+                            <img class="card-img-top" style="border-radius: 40px" src="{{item.image.url}}" alt="Card image cap">
+                        </a> 
+                    </div> 
+                </div>
+                {% endfor %}
+            </div>
+            {% if items.paginator.num_pages > 1 %}
+            <div class="container-fluid mt-5 justify-content-center d-flex">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if items.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ items.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item">
+                            <a class="page-link" href="/?page={{items.number}}">
+                                {{items.number}}
+                            </a>
+                        </li>
+
+                        {% if items.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ items.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-3">
+            <img style="padding-right: 0px; width: 80%" src="{% static 'market/images/side_background.png' %}" align="right">
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block jscode %}
+<script type="text/javascript">
+    $('.carousel').carousel({
+        interval: 3000
+    })
+</script>
+{% endblock %}

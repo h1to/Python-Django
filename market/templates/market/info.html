@@ -1,0 +1,48 @@
+{% extends 'market/base.html' %}
+{% load static %}
+
+
+{% block style %}
+    <script type="text/javascript">
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "270px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-3">
+            <img style="padding: 0px; width: 80%; margin-top: 80px" src="{% static 'market/images/side_background.png' %}">
+        </div>
+
+        <div class="col-6">
+            <div class = "myContainer">
+                <p style = "text-align:center; padding-top: 10%; font-size: 200%; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Online Market "Final Project"
+                <br>EST. 2021<br>
+                <b>Information</b>
+                </p>
+            </div>
+
+            <div class = "">
+                <p style = "text-align:center; padding-top: 10%; font-size:140%; font-family: Cambria, Cochin, Georgia, Times, 'Times'">
+                    <b> How to buy 1 of our franchise? </b>
+                    <br>Lorem ipsum dolor sit amet consectetur,<br>adipisicing elit. Voluptatem ullam sint in fuga.
+                </p>
+                <p style = "text-align:center; padding: 5%; font-size:140%; font-family: Cambria, Cochin, Georgia, Times, 'Times'"><b>How to become a member of our company?</b>
+                    <br> Lorem ipsum dolor sit amet consectetur
+                </p>
+
+                <p style = "text-align:center; padding: 0%; font-size:140%; font-family: Cambria, Cochin, Georgia, Times, 'Times'"><b>Warning! Need to read!</b>
+                    <br> Lorem ipsum dolor sit amet consectetur,<br>adipisicing elit. Voluptatem ullam sint in fuga.
+                </p>
+            </div>
+        </div>
+        <div class="col-3">
+            <img style="padding: 0px; width: 80%; margin-left: 80px; margin-top: 80px" src="{% static 'market/images/side_background.png' %}">
+        </div>
+    </div>
+{% endblock %}
